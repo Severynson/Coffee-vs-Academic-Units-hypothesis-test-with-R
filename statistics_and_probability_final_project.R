@@ -95,16 +95,42 @@ not_caffeine_drinkers_sample$coffee_cups_equiv <- 0.0
 sample <- rbind(caffeine_drinkers_sample, not_caffeine_drinkers_sample)
 nrow(sample)
 
-# Not a single row was lost, and data is prepaired for the following hypothesis test
+# Not a single row was lost, but since I want to test the claim
+# just about the students with 15 units and more, I will filter my sample once again.
+
+sample <- sample[ sample$units_per_semester >= 15 & !is.na(sample$units_per_semester), ]
+
+# Finally, data is prepared for the following hypothesis test
+nrow(sample)
+# The final sample size is 34, what works for 1-Population mean hypothesis test.
 
 ########## Histogram
 
-coffee_cups_basic_histogram <- ggplot(data, aes(Screen.Time))
+coffee_cups_basic_histogram <- ggplot(sample, aes(sample$coffee_cups_equiv))
 coffee_cups_basic_histogram + geom_histogram(col = "black", fill = "grey", breaks =
-                                               seq(min(Screen.Time), max(Screen.Time), by = 1), lwd = 1.5) +
+                                               seq(min(sample$coffee_cups_equiv), max(sample$coffee_cups_equiv), by = 0.5), lwd = 1.5) +
   labs(x = "Coffee cups drinked on the average day", y = "Frequency", title = "Basic Histogram for the Daily Coffee Cups") +
   theme(plot.title = element_text(hjust = 0.5))
 
 ########## QQ-Plot
 
-qqnorm(Screen.Time, main = "QQ Plot for the Coffee Cups distribution")
+qqnorm(sample$coffee_cups_equiv, main = "QQ Plot for the Coffee Cups distribution")
+
+########## Mean, the standard deviation, the 5-number summary, and the sample size.
+
+summary(sample$coffee_cups_equiv)
+sd(sample$coffee_cups_equiv)
+length(sample$coffee_cups_equiv)
+
+# 1-Population Mean test
+
+t.test(sample$coffee_cups_equiv, mu = 2, alternative = "less")
+
+
+
+
+
+
+
+
+
